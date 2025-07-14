@@ -1,0 +1,32 @@
+{
+  "name": "backend-shuttle-system",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "dev": "npx prisma db push && nodemon ./server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "This is a backend shuttle system, it supports JWT authentication and uses a MySQL database for data storage and CRUD operations.",
+  "dependencies": {
+    "@prisma/client": "^6.11.1",
+    "axios": "^1.10.0",
+    "base-64": "^1.0.0",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.1.0",
+    "express": "^5.1.0",
+    "fs": "^0.0.1-security",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.14.1",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^7.0.5",
+    "prisma": "^6.11.1",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+  // The output field specifies where the generated Prisma Client will be saved
+  // By default, it goes to node_modules/.prisma/client, but this overrides it
+  // to save the generated client code to "../src/generated/prisma" directory
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  password  String
+  phone     String?
+  role      String?  @default("USER") // User role, e.g., "ADMIN", "USER"
+
+  bookings  Booking[]
+}
+
+model Location {
+  id               Int       @id @default(autoincrement())
+  location_name    String    @db.VarChar(255) @unique
+  price            Decimal   @db.Decimal(10, 2) @default(0)
+
+  // Inverse relations for Prisma
+  pickupBookings   Booking[] @relation("PickupLocation")
+  dropoffBookings  Booking[] @relation("DropoffLocation")
+}
+
+model Booking {
+  id                   Int       @id @default(autoincrement())
+
+  userId               Int
+  user                 User      @relation(fields: [userId], references: [id])
+
+
+  pickupLocation       Location  @relation("PickupLocation", fields: [pickupLocation_Id], references: [id])
+  pickupLocation_Id    Int
+
+  dropoffLocation      Location  @relation("DropoffLocation", fields: [dropoffLocation_Id], references: [id])
+  dropoffLocation_Id   Int
+
+  bookingTime          DateTime  @default(now())
+
+  // i think I should add a field for the shuttle
+  shuttle              Shuttle   @relation("ShuttleBookings", fields: [shuttleId], references: [id])
+  shuttleId            Int
+
+  price                Int       @default(0)
+}
+
+model Shuttle {
+  id                   Int       @id @default(autoincrement())
+  name                 String    @db.VarChar(255) @unique
+  capacity             Int
+  booked_seats         Int
+  departure_time       DateTime
+  status               String    @default("EMPTY")
+
+  // this will garentee that the shuttle are not used even if they are booked
+  is_available         Boolean   @default(true)
+
+  bookings             Booking[] @relation("ShuttleBookings")
+}
